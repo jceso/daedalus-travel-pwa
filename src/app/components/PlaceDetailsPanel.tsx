@@ -8,9 +8,7 @@ type SearchResult = {
   place_name?: string
   text?: string
   center?: [number, number]
-  geometry?: {
-    coordinates: [number, number]
-  }
+  geometry?: { coordinates: [number, number] }
 }
 
 type PlaceDetailsPanelProps = {
@@ -26,8 +24,7 @@ export default function PlaceDetailsPanel({
   const [favorite, setFavorite] = useState(false)
   const [wishlist, setWishlist] = useState(false)
 
-  const coordinates =
-    place.center ?? place.geometry?.coordinates
+  const coordinates = place.center ?? place.geometry?.coordinates
 
   return (
     <aside className="absolute right-5 top-5 bottom-5 z-30 flex w-[380px] max-w-[calc(100vw-2.5rem)] flex-col overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-2xl">

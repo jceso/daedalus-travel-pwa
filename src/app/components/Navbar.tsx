@@ -9,11 +9,11 @@ const navItems = [
     href: '/',
   },
   {
-    label: 'Places',
-    href: '/places',
+    label: 'Explore the map',
+    href: '/map',
   },
   {
-    label: 'Supabase',
+    label: 'Plan your next trip',
     href: '/test-supabase',
   },
 ]

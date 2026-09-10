@@ -125,7 +125,7 @@ export default function Home() {
 
             <div className="flex flex-col gap-3 sm:flex-row">
               <Link
-                href="/places"
+                href="/map"
                 className="inline-flex h-11 items-center justify-center rounded-xl border border-slate-200 bg-white px-5 text-sm font-semibold text-slate-700 shadow-sm transition hover:border-slate-300 hover:bg-slate-50"
               >
                 Explore places

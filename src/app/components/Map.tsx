@@ -14,18 +14,12 @@ type SearchResult = {
   place_name?: string
   text?: string
   center?: [number, number]
-  geometry?: {
-    coordinates: [number, number]
-  }
+  geometry?: { coordinates: [number, number] }
 }
 
-type MapProps = {
-  selectedPlace: SearchResult | null
-}
+type MapProps = { selectedPlace: SearchResult | null }
 
-export default function Map({
-  selectedPlace,
-}: MapProps) {
+export default function Map({ selectedPlace, }: MapProps) {
   const mapContainer = useRef<HTMLDivElement | null>(null)
   const map = useRef<maptilersdk.Map | null>(null)
 
@@ -49,14 +43,14 @@ export default function Map({
   }, [])
 
   useEffect(() => {
-    if (!map.current) return
-    if (!selectedPlace) return
+    if (!map.current)
+      return
+    if (!selectedPlace)
+      return
 
-    const coordinates =
-      selectedPlace.center ??
-      selectedPlace.geometry?.coordinates
-
-    if (!coordinates) return
+    const coordinates = selectedPlace.center ?? selectedPlace.geometry?.coordinates
+    if (!coordinates)
+      return
 
     map.current.flyTo({
       center: coordinates,
