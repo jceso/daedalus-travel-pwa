@@ -5,17 +5,7 @@ import { useState } from 'react'
 import Map from '@/app/components//Map'
 import PlaceSearch from '@/app/components/PlaceSearch'
 import PlaceDetailsPanel from '@/app/components/PlaceDetailsPanel'
-
-type SearchResult = {
-  id: string
-  type: string
-  place_name?: string
-  text?: string
-  center?: [number, number]
-  geometry?: {
-    coordinates: [number, number]
-  }
-}
+import { SearchResult } from '../models/SearchResult'
 
 export default function PlacesPage() {
   const [selectedPlace, setSelectedPlace] =

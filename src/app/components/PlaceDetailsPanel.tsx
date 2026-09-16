@@ -9,10 +9,7 @@ type PlaceDetailsPanelProps = {
   onClose: () => void
 }
 
-export default function PlaceDetailsPanel({
-  place,
-  onClose,
-}: PlaceDetailsPanelProps) {
+export default function PlaceDetailsPanel({ place, onClose }: PlaceDetailsPanelProps) {
   const [visited, setVisited] = useState(false)
   const [favorite, setFavorite] = useState(false)
   const [wishlist, setWishlist] = useState(false)
@@ -50,7 +47,7 @@ export default function PlaceDetailsPanel({
       </div>
 
       {/* Content */}
-      <div className="flex-1 overflow-y-auto px-4 py-6">
+      <div className="flex-1 overflow-y-auto px-4 py-3">
 
         {/* Coordinates */}
         {/* {coordinates && (
@@ -86,7 +83,7 @@ export default function PlaceDetailsPanel({
         )} */}
 
         {/* Status */}
-        <section className="">
+        <section className="my-2.5">
           <p className="mb-3 px-2 text-xs font-semibold uppercase tracking-[0.16em] text-slate-400">
             Your place
           </p>
@@ -183,7 +180,7 @@ export default function PlaceDetailsPanel({
 
         {/* News */}
         {coordinates && (
-          <section className="mt-8">
+          <section className="mt-6 mb-4">
             <p className="mb-3 px-2 text-xs font-semibold uppercase tracking-[0.16em] text-slate-400">
               News
             </p>
@@ -203,6 +200,21 @@ export default function PlaceDetailsPanel({
 
               <p className="mt-1 font-mono text-sm font-medium text-slate-800">
                 {coordinates[0].toFixed(5)}
+              </p>
+            </div>
+          </section>
+        )}
+
+        {/* Vaccines */}
+        {coordinates && (
+          <section className="">
+            <div className="rounded-2xl border border-yellow-300 bg-orange-50 p-4">
+              <p className="mb-3 px-2 text-xs font-semibold uppercase tracking-[0.16em] text-yellow-500">
+                Vaccines
+              </p>
+
+              <p className="mt-1 font-mono text-sm font-medium text-slate-800">
+                {coordinates[1].toFixed(5)}
               </p>
             </div>
           </section>

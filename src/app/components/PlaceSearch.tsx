@@ -2,6 +2,8 @@
 
 import { useEffect, useRef, useState } from 'react'
 import { SearchResult } from '../models/SearchResult'
+import countryToCurrency from 'country-to-currency'
+import countries from 'i18n-iso-countries'
 
 type PlaceSearchProps = { onSelect: (result: SearchResult) => void }
 
@@ -68,9 +70,21 @@ export default function PlaceSearch({ onSelect, }: PlaceSearchProps) {
 
         const data = await response.json()
 
-
         if (!controller.signal.aborted) {
-          const sortedResults = sortResults(data.features ?? []).slice(0, 5)
+          const sortedResults = sortResults(data.features ?? []).slice(0, 5).map((result: SearchResult) => {
+            const countryCode = result.properties?.country_code?.toUpperCase()
+            const iso3 = countryCode ? countries.alpha2ToAlpha3(countryCode) : undefined
+            const iso4217 = countryCode && countryCode in countryToCurrency ? (countryToCurrency as Record<string, string>)[countryCode]
+                                                                            : undefined
+
+            return {
+              ...result,
+              properties: { ...result.properties, country_code: countryCode },
+              iso3,
+              iso4217
+            }
+          })
+
           setResults(sortedResults)
         }
       } catch (error) {
@@ -92,7 +106,6 @@ export default function PlaceSearch({ onSelect, }: PlaceSearchProps) {
 
   function handleSelect(result: SearchResult) {
     setQuery(result.place_name ?? result.text ?? '')
-    console.dir(result)
     setResults([])
     onSelect(result)
   }
