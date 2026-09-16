@@ -1,16 +1,7 @@
 'use client'
 
 import { useEffect, useRef, useState } from 'react'
-
-type SearchResult = {
-  id: string
-  type: string
-  place_name?: string
-  text?: string
-  center?: [number, number]
-  geometry?: { coordinates: [number, number] }
-  properties?: { [key: string]: unknown }
-}
+import { SearchResult } from '../models/SearchResult'
 
 type PlaceSearchProps = { onSelect: (result: SearchResult) => void }
 
@@ -70,13 +61,13 @@ export default function PlaceSearch({ onSelect, }: PlaceSearchProps) {
           language: 'it',
         })
 
-        const response = await fetch(`https://api.maptiler.com/geocoding/${encodeURIComponent(value)}.json?${params.toString()}`,
-                                      { signal: controller.signal, })
+        const response = await fetch(`https://api.maptiler.com/geocoding/${encodeURIComponent(value)}.json?${params.toString()}`, { signal: controller.signal, })
 
         if (!response.ok)
           throw new Error(`MapTiler request failed: ${response.status}`)
 
         const data = await response.json()
+
 
         if (!controller.signal.aborted) {
           const sortedResults = sortResults(data.features ?? []).slice(0, 5)
@@ -101,6 +92,7 @@ export default function PlaceSearch({ onSelect, }: PlaceSearchProps) {
 
   function handleSelect(result: SearchResult) {
     setQuery(result.place_name ?? result.text ?? '')
+    console.dir(result)
     setResults([])
     onSelect(result)
   }
@@ -113,7 +105,7 @@ export default function PlaceSearch({ onSelect, }: PlaceSearchProps) {
     abortController.current?.abort()
   }
 
-  function getResultLabel(type: string) {
+  function getResultLabel(type?: string) {
     switch (type) {
       case 'city': return 'City'
       case 'town': return 'Town'
@@ -192,7 +184,7 @@ export default function PlaceSearch({ onSelect, }: PlaceSearchProps) {
 
                 {/* Type */}
                 <span className="shrink-0 rounded-full bg-slate-100 px-2 py-1 text-[10px] font-semibold uppercase tracking-wide text-slate-500">
-                  {getResultLabel(result.type)}
+                  {getResultLabel(result.properties?.place_designation)}
                 </span>
             </button>
           ))}

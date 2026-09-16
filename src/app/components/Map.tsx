@@ -5,8 +5,7 @@ import * as maptilersdk from '@maptiler/sdk'
 
 import '@maptiler/sdk/dist/maptiler-sdk.css'
 
-maptilersdk.config.apiKey =
-  process.env.NEXT_PUBLIC_MAPTILER_API_KEY!
+maptilersdk.config.apiKey = process.env.NEXT_PUBLIC_MAPTILER_API_KEY!
 
 type SearchResult = {
   id: string
@@ -26,14 +25,15 @@ export default function Map({ selectedPlace, }: MapProps) {
   const marker = useRef<maptilersdk.Marker | null>(null)
 
   useEffect(() => {
-    if (!mapContainer.current) return
-    if (map.current) return
+    if (!mapContainer.current)
+      return
+    if (map.current)
+      return
 
     map.current = new maptilersdk.Map({
       container: mapContainer.current,
-      style: maptilersdk.MapStyle.STREETS,
-      center: [12.4964, 41.9028],
-      zoom: 5,
+      style: maptilersdk.MapStyle.BASE_V4,
+      center: [12.4964, 41.9028], zoom: 5,
     })
 
     return () => {
@@ -52,17 +52,10 @@ export default function Map({ selectedPlace, }: MapProps) {
     if (!coordinates)
       return
 
-    map.current.flyTo({
-      center: coordinates,
-      zoom: 12,
-      duration: 1500,
-    })
+    map.current.flyTo({ center: coordinates, zoom: 12, duration: 1500, })
 
     marker.current?.remove()
-
-    marker.current = new maptilersdk.Marker()
-      .setLngLat(coordinates)
-      .addTo(map.current)
+    marker.current = new maptilersdk.Marker().setLngLat(coordinates).addTo(map.current)
   }, [selectedPlace])
 
   return (
