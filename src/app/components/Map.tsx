@@ -4,17 +4,9 @@ import { useEffect, useRef } from 'react'
 import * as maptilersdk from '@maptiler/sdk'
 
 import '@maptiler/sdk/dist/maptiler-sdk.css'
+import { SearchResult } from '../models/SearchResult'
 
 maptilersdk.config.apiKey = process.env.NEXT_PUBLIC_MAPTILER_API_KEY!
-
-type SearchResult = {
-  id: string
-  type: string
-  place_name?: string
-  text?: string
-  center?: [number, number]
-  geometry?: { coordinates: [number, number] }
-}
 
 type MapProps = { selectedPlace: SearchResult | null }
 

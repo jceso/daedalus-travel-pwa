@@ -21,8 +21,30 @@ const TYPE_PRIORITY: Record<string, number> = {
   poi: 0,
 }
 
-function getPriority(result: SearchResult) {
-  return TYPE_PRIORITY[result.type] ?? -1
+function getPriority(result: SearchResult) { return TYPE_PRIORITY[result.type] ?? -1 }
+
+function htmlToText(html?: string): string {
+  if (!html) return ''
+
+  return html
+    .replace(/<br\s*\/?>/gi, '\n')
+    .replace(/<\/p>/gi, '\n')
+    .replace(/<[^>]*>/g, '')
+    .replace(/&nbsp;/gi, ' ')
+    .replace(/&amp;/gi, '&')
+    .replace(/&lt;/gi, '<')
+    .replace(/&gt;/gi, '>')
+    .replace(/&#39;/gi, "'")
+    .replace(/&quot;/gi, '"')
+    .replace(/\n\s*\n/g, ' ')
+    .trim()
+}
+
+function summarize(original?: string): string {
+  if (!original)
+    return ''
+
+  return original
 }
 
 function sortResults(results: SearchResult[]) {
@@ -71,19 +93,14 @@ export default function PlaceSearch({ onSelect, }: PlaceSearchProps) {
         const data = await response.json()
 
         if (!controller.signal.aborted) {
-          const sortedResults = sortResults(data.features ?? []).slice(0, 5).map((result: SearchResult) => {
+          const sortedResults = await Promise.all(sortResults(data.features ?? []).slice(0, 5).map(async (result: SearchResult) => {
             const countryCode = result.properties?.country_code?.toUpperCase()
             const iso3 = countryCode ? countries.alpha2ToAlpha3(countryCode) : undefined
             const iso4217 = countryCode && countryCode in countryToCurrency ? (countryToCurrency as Record<string, string>)[countryCode]
                                                                             : undefined
 
-            return {
-              ...result,
-              properties: { ...result.properties, country_code: countryCode },
-              iso3,
-              iso4217
-            }
-          })
+            return { ...result, properties: { ...result.properties, country_code: countryCode }, iso3, iso4217 }
+          }))
 
           setResults(sortedResults)
         }
@@ -104,10 +121,71 @@ export default function PlaceSearch({ onSelect, }: PlaceSearchProps) {
     return () => { clearTimeout(timeout) }
   }, [query])
 
-  function handleSelect(result: SearchResult) {
+  async function handleSelect(result: SearchResult) {
     setQuery(result.place_name ?? result.text ?? '')
     setResults([])
-    onSelect(result)
+    setLoading(true)
+
+    try {
+      const iso3 = result.iso3
+      const iso4217 = result.iso4217
+
+      if (!iso3) {
+        onSelect(result)
+        return
+      }
+
+      const response = await fetch(`/api/place/${result.iso3}`)
+      if (!response.ok)
+        throw new Error(`Country API failed: ${response.status}`)
+
+      const data = await response.json()
+      const countryInfo = data.countryInfo
+      const newsInfo = data.newsInfo
+
+      const passportHtml = countryInfo?.infoRequisitiIngresso?.nodi?.Passaporto?.contenuto ?? ''
+      const visaHtml = countryInfo?.infoRequisitiIngresso?.nodi?.['Visto-di-ingresso']?.contenuto ?? ''
+      const vaccines = countryInfo?.infoSituazioneSanitaria?.nodi?.['Vaccinazioni-obbligatorie']?.contenuto ?? ''
+      const terrorism = countryInfo?.infoSicurezza?.nodi?.['Rischio-terrorismo']?.contenuto ?? ''
+      const laws = countryInfo?.infoSicurezza?.nodi?.['Normative-locali-rilevanti']?.contenuto ?? ''
+
+      const enrichedResult: SearchResult = {
+        ...result,
+        country_info_src: {
+          src_url: `https://www.viaggiaresicuri.it/schede_paese/${iso3}.json`,
+
+          passport_origin: htmlToText(passportHtml),
+          passport: summarize(htmlToText(passportHtml)),
+
+          visa_origin: htmlToText(visaHtml),
+          visa: summarize(htmlToText(visaHtml)),
+
+          vaccines_orig: htmlToText(vaccines),
+          vaccines: summarize(htmlToText(vaccines)),
+
+          terrorism_origin: htmlToText(terrorism),
+          terrorism: summarize(htmlToText(terrorism)),
+
+          laws_origin: htmlToText(laws),
+          laws: summarize(htmlToText(laws)),
+
+          info_news_url: `https://www.viaggiaresicuri.it/ultima_ora/${iso3}.json`,
+          news: newsInfo?.ultima_ora?.map((item: { titolo?: string }) => htmlToText(item.titolo)).filter(Boolean) ?? []
+        }
+      }
+
+      console.dir(enrichedResult)
+
+      onSelect(enrichedResult)
+    } catch (error) {
+      console.error('COUNTRY INFO ERROR:', error)
+
+      // Anche se le API aggiuntive falliscono,
+      // puoi comunque usare il risultato MapTiler.
+      onSelect(result)
+    } finally {
+      setLoading(false)
+    }
   }
 
   function handleClear() {

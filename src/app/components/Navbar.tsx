@@ -14,7 +14,7 @@ const navItems = [
   },
   {
     label: 'Plan your next trip',
-    href: '/test-supabase',
+    href: '/',
   },
 ]
 

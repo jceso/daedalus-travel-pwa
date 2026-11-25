@@ -207,21 +207,14 @@ export default function Home() {
                 </p>
               </div>
 
-              <Link
-                href="/places"
-                className="text-xs font-semibold text-slate-500 transition hover:text-slate-900"
-              >
+              <Link href="/places" className="text-xs font-semibold text-slate-500 transition hover:text-slate-900">
                 View all →
               </Link>
             </div>
 
             <div className="grid gap-4 sm:grid-cols-2">
               {places.map((place) => (
-                <Link
-                  href="/places"
-                  key={place.name}
-                  className="group overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm transition hover:-translate-y-0.5 hover:border-slate-300 hover:shadow-md"
-                >
+                <Link href="/places" key={place.name} className="group overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm transition hover:-translate-y-0.5 hover:border-slate-300 hover:shadow-md">
                   <div className="flex h-32 items-center justify-center bg-gradient-to-br from-slate-100 to-slate-50 text-5xl">
                     {place.emoji}
                   </div>
@@ -350,21 +343,14 @@ export default function Home() {
               </p>
             </div>
 
-            <Link
-              href="/trips"
-              className="text-xs font-semibold text-slate-500 transition hover:text-slate-900"
-            >
+            <Link href="/trips" className="text-xs font-semibold text-slate-500 transition hover:text-slate-900">
               Manage trips →
             </Link>
           </div>
 
           <div className="grid gap-4 md:grid-cols-2">
             {trips.map((trip) => (
-              <Link
-                href="/trips"
-                key={trip.title}
-                className={`group relative overflow-hidden rounded-2xl border border-slate-200 bg-gradient-to-br ${trip.color} p-6 transition hover:-translate-y-0.5 hover:shadow-md`}
-              >
+              <Link href="/trips" key={trip.title} className={`group relative overflow-hidden rounded-2xl border border-slate-200 bg-gradient-to-br ${trip.color} p-6 transition hover:-translate-y-0.5 hover:shadow-md`}>
                 <div className="relative z-10 flex items-start justify-between">
                   <div>
                     <span className="text-3xl">{trip.icon}</span>
@@ -385,10 +371,7 @@ export default function Home() {
 
                 <div className="relative z-10 mt-8 flex flex-wrap gap-2">
                   {trip.places.map((place) => (
-                    <span
-                      key={place}
-                      className="rounded-full bg-white/70 px-3 py-1.5 text-[10px] font-semibold text-slate-600"
-                    >
+                    <span key={place} className="rounded-full bg-white/70 px-3 py-1.5 text-[10px] font-semibold text-slate-600">
                       {place}
                     </span>
                   ))}
@@ -416,34 +399,28 @@ export default function Home() {
 
             <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
               {recentActivity.map((activity, index) => (
-                <div
-                  key={`${activity.place}-${activity.date}`}
-                  className={`flex items-center gap-4 p-5 ${
-                    index !== recentActivity.length - 1
-                      ? 'border-b border-slate-100'
-                      : ''
-                  }`}
-                >
-                  <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-slate-100">
-                    {activity.icon}
-                  </div>
+                <div key={`${activity.place}-${activity.date}`}
+                  className={`flex items-center gap-4 p-5 ${ index !== recentActivity.length - 1 ? 'border-b border-slate-100' : '' }`} >
+                    <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-slate-100">
+                      {activity.icon}
+                    </div>
 
-                  <div className="min-w-0 flex-1">
-                    <p className="text-sm text-slate-700">
-                      <span className="font-semibold text-slate-900">
-                        {activity.action}
-                      </span>{' '}
-                      {activity.place}
-                    </p>
+                    <div className="min-w-0 flex-1">
+                      <p className="text-sm text-slate-700">
+                        <span className="font-semibold text-slate-900">
+                          {activity.action}
+                        </span>{' '}
+                        {activity.place}
+                      </p>
 
-                    <p className="mt-1 text-xs text-slate-400">
-                      {activity.country}
-                    </p>
-                  </div>
+                      <p className="mt-1 text-xs text-slate-400">
+                        {activity.country}
+                      </p>
+                    </div>
 
-                  <span className="text-xs text-slate-400">
-                    {activity.date}
-                  </span>
+                    <span className="text-xs text-slate-400">
+                      {activity.date}
+                    </span>
                 </div>
               ))}
             </div>
